@@ -16,15 +16,14 @@ readInput filePath = do
 processInput :: [String] -> IO [Int]
 processInput filedata = return $ map read filedata
 
-compactAndCompare :: Num a => [a] -> [a]
-compactAndCompare [] = []
-compactAndCompare [x] = []
-compactAndCompare (x : y : xs) = (y - x) : compactAndCompare (y : xs)
+compactAndCompare :: Num a => Int -> [a] -> [a]
+compactAndCompare n list
+  | length list >= n  = (sum $ take n (tail list)) - (sum $ take n list) : compactAndCompare n (tail list)
+  | otherwise         = []
 
--- Solution
-solve :: [Int] -> IO Int
-solve depths = do
-  return $ length $ filter (> 0) (compactAndCompare depths)
+solve :: Int -> [Int] -> IO Int
+solve slidingSize depths = do
+  return $ length $ filter (> 0) (compactAndCompare slidingSize depths)
 
 -- Main Program
 main :: IO ()
@@ -32,10 +31,15 @@ main = do
   putStrLn $ "Solving test data..."
   filedata <- readInput testPath
   problemData <- processInput filedata
-  answer <- solve problemData
+  answer <- solve 1 problemData
   putStrLn $ "Test answer is " ++ (show answer)
   putStrLn $ "Solving Part 1..."
   filedata <- readInput inputPath
   problemData <- processInput filedata
-  answer <- solve problemData
+  answer <- solve 1 problemData
   putStrLn $ "Part 1 answer is " ++ (show answer)
+  putStrLn $ "Solving Part 2..."
+  filedata <- readInput inputPath
+  problemData <- processInput filedata
+  answer <- solve 3 problemData
+  putStrLn $ "Part 2 answer is " ++ (show answer)
