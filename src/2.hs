@@ -1,3 +1,5 @@
+import Data.List
+
 -- Input & Output
 basePath :: String
 basePath = "/mnt/c/Users/dlabs/Documents/Personal/advent_of_code_2021/"
@@ -13,12 +15,22 @@ readInput filePath = do
   content <- readFile filePath
   return $ lines content
 
-processInput :: [String] -> IO [Int]
-processInput filedata = return $ map read filedata
+type Movement = (Int, Int)
 
-solve :: Int -> [Int] -> IO Int
-solve slidingSize depths = do
-  return $ length $ filter (> 0) (compactAndCompare slidingSize depths)
+processCommand :: String -> Movement
+processCommand command =
+  case words command of
+    ("forward"  : units : []) -> (read units, 0)
+    ("up"       : units : []) -> (0, - read units) 
+    ("down"     : units : []) -> (0, read units)
+
+processInput :: [String] -> IO [Movement]
+processInput filedata = return $ map processCommand filedata
+
+solve :: [Movement] -> IO Int
+solve movements = return $ let final_x = sum $ map fst movements
+                               final_y = sum $ map snd movements
+                           in final_x * final_y
 
 -- Main Program
 main :: IO ()
@@ -33,8 +45,3 @@ main = do
   problemData <- processInput filedata
   answer <- solve problemData
   putStrLn $ "Part 1 answer is " ++ (show answer)
-  -- putStrLn $ "Solving Part 2..."
-  -- filedata <- readInput inputPath
-  -- problemData <- processInput filedata
-  -- answer <- solve problemData
-  -- putStrLn $ "Part 2 answer is " ++ (show answer)
