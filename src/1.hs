@@ -13,9 +13,11 @@ readInput filePath = do
   content <- readFile filePath
   return $ lines content
 
+-- Datatypes & Data parsing
 processInput :: [String] -> IO [Int]
 processInput filedata = return $ map read filedata
 
+-- Logic Handling
 compactAndCompare :: Num a => Int -> [a] -> [a]
 compactAndCompare n list
   | length list >= n  = (sum $ take n (tail list)) - (sum $ take n list) : compactAndCompare n (tail list)

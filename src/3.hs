@@ -15,6 +15,7 @@ readInput filePath = do
   content <- readFile filePath
   return $ lines content
 
+-- Datatypes & Data parsing
 intToBool :: Char -> Bool
 intToBool = (/= 0) . read . pure
 
@@ -24,6 +25,7 @@ type Binary = [Bool]
 processInput :: [String] -> IO Binaries
 processInput filedata = return $ map (\s -> map intToBool s) filedata
 
+-- Logic Handling
 mostCommon :: Ord a => [a] -> a
 mostCommon = snd . maximum . map (\xs -> (length xs, head xs)) . group . sort
 

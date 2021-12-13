@@ -15,6 +15,7 @@ readInput filePath = do
   content <- readFile filePath
   return $ lines content
 
+-- Datatypes & Data parsing
 type Movement = (Int, Int)
 
 processCommand :: String -> Movement
@@ -27,6 +28,7 @@ processCommand command =
 processInput :: [String] -> IO [Movement]
 processInput filedata = return $ map processCommand filedata
 
+-- Logic Handling
 solveWithXY :: [Movement] -> IO Int
 solveWithXY movements = return $ let final_x = sum $ map fst movements
                                      final_y = sum $ map snd movements
