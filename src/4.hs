@@ -70,16 +70,29 @@ takeWhileOneMore p (x:xs) =
    then x : takeWhileOneMore p xs
    else [x]
 
-determineSequence :: Bingo -> Numbers
-determineSequence (numbers, boards) = last $ takeWhileOneMore f (inits numbers)
+determineWinnerSequence :: Bingo -> Numbers
+determineWinnerSequence (numbers, boards) = last $ takeWhileOneMore f (inits numbers)
   where f = \init -> (null . concat) (map (winnerCombination init) boards)
 
 determineWinnerBoard :: Numbers -> [Board] -> Board 
 determineWinnerBoard sequence boards = head $ filter (isWinner sequence) boards
 
-determineSolution :: Bingo -> (Numbers, Board) 
-determineSolution bingo@(numbers, boards) = let sequence = determineSequence bingo
-                                            in (sequence, determineWinnerBoard sequence boards)
+determineWinnerSolution :: Bingo -> (Numbers, Board) 
+determineWinnerSolution bingo@(numbers, boards) = let winnerSequence = determineWinnerSequence bingo
+                                                      winnerBoard = determineWinnerBoard winnerSequence boards
+                                                  in (winnerSequence, winnerBoard)
+
+determineLoserSequence :: Bingo -> Numbers
+determineLoserSequence (numbers, boards) = last $ takeWhile f (reverse $ inits numbers)
+  where f = \init -> all ((/= 0) . length) (map (winnerCombination init) boards)
+
+determineLoserBoard :: Numbers -> [Board] -> Board 
+determineLoserBoard sequence boards = head $ filter (not . isWinner (init sequence)) boards
+
+determineLoserSolution :: Bingo -> (Numbers, Board) 
+determineLoserSolution bingo@(numbers, boards) = let loserSequence = determineLoserSequence bingo
+                                                     loserBoard = determineLoserBoard loserSequence boards
+                                                 in (loserSequence, loserBoard)
 
 score :: (Numbers, Board) -> IO Int
 score (numbers, board) = let unmarkedNumbers = filter ((flip notElem) numbers) (concat board)
@@ -92,10 +105,21 @@ main = do
   putStrLn $ "Solving test data..."
   filedata <- readInput testPath
   problemData <- processInput filedata
-  answer <- score $ determineSolution problemData 
-  putStrLn $ "Final score from example is " ++ (show answer)
+  answer <- score $ determineWinnerSolution problemData 
+  putStrLn $ "Final score for winner board from example is " ++ (show answer)
   putStrLn $ "Solving Part 1..."
   filedata <- readInput inputPath
   problemData <- processInput filedata
-  answer <- score $ determineSolution problemData
-  putStrLn $ "Final score is " ++ (show answer)
+  answer <- score $ determineWinnerSolution problemData
+  putStrLn $ "Final score for winner board is " ++ (show answer)
+  putStrLn $ "Solving test data..."
+  filedata <- readInput testPath
+  problemData <- processInput filedata
+  answer <- score $ determineLoserSolution problemData 
+  putStrLn $ "Final score for loser board from example is " ++ (show answer)
+  putStrLn $ "Solving Part 2..."
+  filedata <- readInput inputPath
+  problemData <- processInput filedata
+  answer <- score $ determineLoserSolution problemData
+  putStrLn $ "Final score for loser board is " ++ (show answer)
+
