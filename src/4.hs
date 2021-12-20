@@ -7,7 +7,7 @@ basePath :: String
 basePath = "/mnt/c/Users/dlabs/Documents/Personal/advent_of_code_2021/"
 
 testPath :: String
-testPath = basePath ++ "tests/4.txt"
+testPath = basePath ++ "examples/4.txt"
 
 inputPath :: String
 inputPath = basePath ++ "inputs/4.txt"
