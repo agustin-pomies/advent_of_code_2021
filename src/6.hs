@@ -54,8 +54,14 @@ module Lanternfish where
     putStrLn $ "Lanternfish population on day 80 is " ++ (show answer)
 
   part2 :: IO ()
-  part2 = undefined
+  part2 = do
+    putStrLn $ "Solving Part 2..."
+    filedata <- readInput inputPath
+    problemData <- processInput filedata
+    answer <- solve problemData 256
+    putStrLn $ "Lanternfish population on day 256 is " ++ (show answer)
 
   main :: IO ()
   main = do
     part1
+    part2
