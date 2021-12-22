@@ -8,4 +8,7 @@ import Test.Hspec
 -- Add more props...
 
 -- Main Test Module --
+testPath :: String
+testPath = basePath ++ "examples/DAY_NUMBER.txt"
+
 main = undefined

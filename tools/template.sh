@@ -68,7 +68,7 @@ if [ -f "$test_absolute_path" ]; then
   echo "-> $test_filename (present)"
   FILES_PRESENT=$(( FILES_PRESENT + 1 ))
 else
-  cp "$tools_path/template.test.$extension" $test_absolute_path
+  sed "s/DAY_NUMBER/$day/" "$tools_path/template.test.$extension" > $test_absolute_path
   echo "-> $test_filename (created)"
   FILES_CREATED=$(( FILES_CREATED + 1 ))
 fi
