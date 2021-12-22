@@ -37,11 +37,15 @@ module Day7 where
   distance1D :: Int -> Int -> Int
   distance1D a b = abs (a - b)
 
-  optimalAlignment1D :: [Position] -> (Position, Int)
-  optimalAlignment1D set = min' (alignCost distance1D set) [0..maximum set]
+  distanceJumps :: Int -> Int -> Int
+  distanceJumps a b = let distance = distance1D a b
+                      in distance * (distance + 1) `div` 2
 
-  solve :: [Position] -> IO Position
-  solve set = return $ (snd . optimalAlignment1D) set
+  optimalAlignment :: (Position -> Position -> Int) -> [Position] -> (Position, Int)
+  optimalAlignment distance set = min' (alignCost distance set) [0..maximum set]
+
+  solve :: (Position -> Position -> Int) -> [Position] -> IO Position
+  solve distance set = return $ snd (optimalAlignment distance set)
 
   -- Main Program
   part1 :: IO ()
@@ -49,12 +53,18 @@ module Day7 where
     putStrLn $ "Solving Part 1..."
     filedata <- readInput inputPath
     problemData <- processInput filedata
-    answer <- solve problemData
-    putStrLn $ "Part 1 answer is " ++ (show answer)
+    answer <- solve distance1D problemData
+    putStrLn $ "Total fuel consumed on cheapest alignment with normal distance is " ++ (show answer)
 
   part2 :: IO ()
-  part2 = undefined
+  part2 = do
+    putStrLn $ "Solving Part 2..."
+    filedata <- readInput inputPath
+    problemData <- processInput filedata
+    answer <- solve distanceJumps problemData
+    putStrLn $ "Total fuel consumed on cheapest alignment with distance jumps is " ++ (show answer)
 
   main :: IO ()
   main = do
     part1
+    part2
